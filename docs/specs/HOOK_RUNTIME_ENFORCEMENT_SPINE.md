@@ -1,0 +1,695 @@
+# HOOK_RUNTIME_ENFORCEMENT_SPINE.md
+**Status:** Hook runtime enforcement spine contract baseline (Slice 2 core + Wave 6A Slice 3/Blocks B-D + Wave 6B Block A + Phase 1 lifecycle structural lane + Phase 2 MCP observe-only lane + Phase 3 task/idle structural lane + Packet 7A advisory presence lane; 24 lifecycle events)
+**Audience:** Architect, implementers, maintainers
+
+## Purpose
+
+This document defines the shipped command-hook enforcement spine for the Blue Collar Governance Plugin repo.
+
+Slice 1 established deterministic fail-closed command enforcement over existing `ControlRodMode` and `ForemansWalk` truth.
+
+Slice 2 preserves that behavior and adds compaction-safe continuity through bounded startup re-injection.
+
+## Scope
+
+Slice 2 includes exactly:
+
+- project hook registration at `.claude/settings.json`
+- fail-closed command-hook runtime entrypoint at `.claude/hooks/run-governance-hook.js`
+- deterministic local hook adapter at `src/HookRuntime.js`
+- Slice 2 helper runtime at `src/HookRuntimeSlice2.js`
+- `SessionStart` bounded governance context injection for `startup`, `compact`, and `resume`
+- `PreCompact` preservation of governed runtime state for compact survival
+- `PreToolUse` HARD_STOP enforcement over the current matched tool set
+- `PermissionRequest` rod-aligned resolution for `FULL_AUTO` and `SUPERVISED`
+- `Stop` hook closeout gate through existing `ForemansWalk`
+- narrow persistent deny-rule alignment through project settings
+
+Slice 2 excludes:
+
+- `PostCompact` behavior (not required in this slice)
+- `PostToolUse`
+- `PostToolUseFailure`
+- `TaskCreated`
+- `TaskCompleted`
+- `SessionEnd`
+- `Agent` tool governance
+- HTTP hooks
+- LLM-based hook decisions
+
+## Hook Coverage
+
+Command enforcement coverage remains:
+
+- `Bash`
+- `Write`
+- `Edit`
+
+`Agent` is still out of scope until deterministic tool-to-domain mapping exists for agent spawn semantics.
+
+## Fail-Closed Rule
+
+Every enforcement hook in this spine must fail closed on runtime error.
+
+Required behavior:
+
+- unexpected hook error exits with code `2`
+- exit `1` is not used for enforcement failure
+- all decisions are made locally with deterministic code
+- no external calls are allowed in the hook runtime path
+
+## Startup Re-Injection
+
+`SessionStart` now injects bounded governance context only:
+
+- startup source (`startup`, `compact`, `resume`, or `clear`)
+- active control-rod profile id
+- bounded observed/block counts
+- latest relevant stop/walk posture summary
+
+The injected context does not replay transcript content and does not carry unbounded payloads.
+
+## Compaction Survival
+
+`PreCompact` now writes a bounded preservation snapshot under `.claude/runtime/_compaction-preserved.json` containing only runtime-governance continuity data:
+
+- observed action ledger (bounded)
+- blocked attempt ledger (bounded)
+- stop-gate signature/timestamp
+- latest walk snapshot
+- compact trigger + save timestamp metadata
+
+On `SessionStart` with source `compact` (and `resume` when state is not already present), Slice 2 rehydrates from that snapshot.
+
+## Missing/Malformed Recovery Guard
+
+If compact/re-entry startup requires preserved state and snapshot data is missing or malformed:
+
+- startup context explicitly reports recovery HOLD status
+- runtime injects a deterministic HARD_STOP recovery hold action
+- `Stop` closeout remains blocked through existing Walk gate behavior
+
+This prevents silent fail-open on compaction recovery loss.
+
+## Control Rod Integration
+
+Current enforcement posture still resolves from `.claude/settings.json` and uses `conservative` by default.
+
+`PreToolUse` behavior remains:
+
+- classify matched `Bash`, `Write`, and `Edit` calls against `ControlRodMode` domain/operation truth
+- deny `HARD_STOP` actions before execution
+- ask on `SUPERVISED` actions
+- on `Write` / `Edit` `SUPERVISED` asks only, may append advisory text about existing on-disk slash-family `HOLD` / `KILL` markers through the existing `permissionDecisionReason` string only
+- record `FULL_AUTO` observations for stop verification
+
+`PermissionRequest` behavior remains:
+
+- auto-allow `FULL_AUTO` actions when dialog would otherwise appear
+- preserve normal user approval on `SUPERVISED` actions
+- consult active permits for `HARD_STOP` domains (Block D); allow if valid permit exists, deny otherwise
+
+## Persistent Deny Layer
+
+Project `permissions.deny` remains intentionally narrow and aligned to current HARD_STOP posture:
+
+- destructive `Bash` signatures
+- pricing / quote edit patterns
+- customer / PII edit patterns
+- schema / migrations edit patterns
+- auth / security edit patterns
+
+This remains deny-first posture alignment, not a generic settings-management subsystem.
+
+## Contract Boundaries
+
+Slice 2 does not widen:
+
+- `ControlRodMode`
+- `ForemansWalk`
+- `SessionBrief`
+- `SessionReceipt`
+- `ConstraintsRegistry`
+
+Hook runtime behavior remains an adapter over existing truth.
+
+## Current Implementation Truth
+
+- Hook registration exists at `.claude/settings.json`.
+- Hook command entrypoint exists at `.claude/hooks/run-governance-hook.js`.
+- Deterministic runtime adapter exists at `src/HookRuntime.js` with Slice 2 helper logic at `src/HookRuntimeSlice2.js`.
+- Packet 7A advisory helper exists at `src/ConfidenceAdvisor.js`.
+- Golden proof exists at `tests/golden/HookRuntime.golden.test.js`.
+- Golden proof for Packet 7A advisory helper exists at `tests/golden/ConfidenceAdvisor.golden.test.js`.
+- Live proof exists at `tests/live/wave5.hook-runtime.live.test.js`.
+- Canonical onboarding/runtime-proof artifact exists at `docs/WAVE5_ONBOARDING_RUNTIME_PROOF.md`.
+- Wave 5 closeout evidence map exists at `docs/WAVE5_CLOSEOUT.md`.
+
+## Plugin Conversion Addendum
+
+- Plugin hook registration now exists at `hooks/hooks.json`.
+- The plugin-root hook wrapper lives at `hooks/run-governance-hook.js` and reuses the existing shipped runtime rather than duplicating hook logic.
+- Project `.claude/settings.json` remains the current `permissions.deny` delivery surface and the standalone compatibility path.
+- Plugin conversion does not widen `ControlRodMode`, `ForemansWalk`, `SessionBrief`, `SessionReceipt`, or `ConstraintsRegistry`.
+- Plugin and standalone hook registration should currently be treated as alternate modes until simultaneous loading is explicitly proven.
+
+## Slice 3: Fail-Closed Hook Hardening (Wave 6A Block A)
+
+Slice 3 hardens the existing Slice 2 hook runtime so that blocking enforcement paths fail closed on internal error rather than propagating exceptions to the hook wrapper.
+
+### Scope
+
+Slice 3 adds exactly:
+
+- `PreToolUse` internal try-catch: on unexpected error during classification, state load, or state save, returns a deny decision with `FAIL_CLOSED` reason instead of propagating the exception
+- `PermissionRequest` internal try-catch: on unexpected error, returns a deny decision with `FAIL_CLOSED` reason instead of propagating the exception
+- `Stop` internal try-catch: on unexpected error during Walk evaluation, state load, or state save, returns a block decision with `FAIL_CLOSED` reason instead of crashing the process
+- Unknown hook event guard: `runHookEvent` now throws on unrecognized event names instead of returning `{}`, ensuring new Claude Code lifecycle events do not silently pass through
+
+### Why
+
+Prior to Slice 3, blocking hook paths relied on the outermost hook wrapper catching exceptions and exiting with code 2. This is fail-closed at the process level, but exit code 2 means the hook crashed — which may trigger Claude Code retry behavior or surface an error to the user. Slice 3 makes each handler produce a correct governance decision even on internal error, keeping the session governable.
+
+The unknown-event guard prevents silent fail-open if Claude Code introduces new lifecycle events that the governance runtime does not yet handle. The thrown error propagates to the hook wrapper, which exits with code 2.
+
+### Behavior Table
+
+| Handler | Internal Error Before Slice 3 | Internal Error After Slice 3 |
+|---------|-------------------------------|------------------------------|
+| `PreToolUse` | Exception → wrapper exit 2 | Deny decision with FAIL_CLOSED reason |
+| `PermissionRequest` | Exception → wrapper exit 2 | Deny decision with FAIL_CLOSED reason |
+| `Stop` | Exception → wrapper exit 2 | Block decision with FAIL_CLOSED reason |
+| Unknown event | Return `{}` (silent pass) | Exception → wrapper exit 2 |
+
+### Contract Boundaries
+
+Slice 3 does not widen:
+
+- `ControlRodMode`
+- `ForemansWalk`
+- `SessionBrief`
+- `SessionReceipt`
+- `ConstraintsRegistry`
+
+Slice 3 does not add new hook event handlers, does not change classification logic, and does not change the normal-path behavior of any existing handler. Only error paths are affected.
+
+## Block B: Enforcement Matrix v1 (Wave 6A)
+
+Block B extends the hook runtime from 5 handled events to 8 by adding three observational event handlers.
+
+### New Events
+
+| Event | Can block? | Behavior |
+|-------|-----------|----------|
+| `ConfigChange` | No (observation only) | Records governance-config mutation as an observed action under `auth_security_surfaces`. Returns advisory context describing the change source and active profile. Does not block config edits. |
+| `CwdChanged` | No (observation only) | Records working-directory change in session state (`lastCwdChange`). Returns advisory context. Notes explicitly if new directory is outside the project root. |
+| `FileChanged` | No (observation only) | Fires on changes to governance-relevant files (`.claude/settings.json`). Records external file change as an observed action under `auth_security_surfaces`. Returns advisory context. |
+
+### Hook Registration
+
+Both `.claude/settings.json` and `hooks/hooks.json` register these three events. `FileChanged` uses a narrow matcher scoped to `.claude/settings.json` only.
+
+### Fail-Closed Behavior
+
+All three handlers follow the Slice 3 fail-closed pattern: internal errors produce advisory context with a `FAIL_CLOSED` prefix rather than crashing the process. Since none of these events return blocking decisions on the normal path, fail-closed means advisory degradation, not deny/block.
+
+### Session State
+
+Block B adds one optional field to session state: `lastCwdChange` (`{ from, to, changedAt } | null`). Missing field defaults to null. Existing state files remain compatible.
+
+### Contract Boundaries
+
+Block B does not widen:
+
+- `ControlRodMode`
+- `ForemansWalk`
+- `SessionBrief`
+- `SessionReceipt`
+- `ConstraintsRegistry`
+- `ForensicChain`
+
+Block B does not write to the forensic chain (that is Block C scope). Block B does not implement permit/lockout closure (that is Block D scope). Block B does not handle `InstructionsLoaded`, `PostToolUse`, `TaskCreated`, `TaskCompleted`, or any other events beyond the three listed above.
+
+## Block C: Live Chain Population v1 (Wave 6A)
+
+Block C extends the hook runtime from 8 handled events to 10 and populates the forensic chain from real runtime events.
+
+### New Events
+
+| Event | Behavior |
+|-------|----------|
+| `PostToolUse` | Classifies the completed tool action. If the action matches a governed domain, writes an `EVIDENCE` chain entry. Unclassified actions produce no chain write. |
+| `PostToolUseFailure` | Classifies the failed tool action. If the action matches a governed domain, writes an `EVIDENCE` chain entry with a bounded error summary. |
+
+### Chain Writes from Existing Events
+
+| Event | Chain entry type | Trigger |
+|-------|-----------------|---------|
+| PreToolUse (HARD_STOP blocked) | `OPERATOR_ACTION` | Every denied action |
+| ConfigChange | `OPERATOR_ACTION` | Every config mutation detection |
+| FileChanged | `OPERATOR_ACTION` | Every external governance-file change |
+
+### Chain Entry ID Strategy
+
+Entry IDs use the pattern `hook_{eventType}_{sessionId}_{counter}` where `counter` is a persisted monotonic integer (`nextChainCounter`) stored in session state. The counter increments atomically with each append, survives compaction via `PreCompact` persistence and `SessionStart` rehydration, and is never reset within a session lineage.
+
+### Duplicate-Entry Policy
+
+- Duplication across session state (observedActions/blockedAttempts) and chain is acceptable — they serve different purposes.
+- Duplication inside the chain is prevented: before appending, the helper checks if an entry with the generated `entryId` already exists in `chainEntries`. If so, the write is skipped. Since the counter is monotonic, this guard handles the edge case of an unexpected re-fire producing the same counter value.
+- Replayed or retried events that produce different counter values represent genuinely distinct invocations and write separate entries.
+
+### Events Consciously Deferred
+
+`TaskCreated` and `TaskCompleted` are not wired to chain writes in Block C. These are task-management lifecycle events with low governance-evidence value. Writing them would create chain noise without meaningful enforcement or accountability signal. This is a conscious noise-reduction decision.
+
+`InstructionsLoaded` is not handled. Instruction-integrity detection remains a separate HOLD.
+
+### Session State Additions
+
+- `chainEntries: []` — bounded array of chain entry objects (MAX_CHAIN_ENTRIES = 128)
+- `nextChainCounter: 1` — persisted monotonic counter for entry ID generation
+
+Both fields are persisted through compaction and rehydrated on recovery. Missing fields default to empty array and 1 respectively.
+
+### Walk Integration
+
+`buildWalkEvaluationFromState` continues to pass `forensicEntries: []` to the Foreman's Walk evaluation. Hook-generated chain entries are self-standing runtime evidence with no claim linkage, and feeding them into the Walk's truthfulness check would produce false GHOST findings (evidence without linked claims). Chain entries persist in session state and are visible through `/chain` independently from the Walk's evaluation.
+
+### Contract Boundaries
+
+Block C does not widen the ForensicChain contract. All entries use existing entry types (`EVIDENCE`, `OPERATOR_ACTION`). No new entry types are introduced. The ForensicChain class itself (`src/ForensicChain.js`) is not modified.
+
+Block C does not implement permit/lockout closure (Block D scope).
+
+## Block D: Permit / Lockout Runtime Closure (Wave 6A)
+
+Block D wires the existing `ControlRodMode.evaluateHardStopGate()` API into the hook runtime so that operator-authored permits allow scoped passage through HARD_STOP domains.
+
+### Runtime Behavior Change
+
+Before Block D, all HARD_STOP domain actions were flatly denied at PreToolUse and PermissionRequest time. After Block D, the HARD_STOP path consults session state for matching authorization and permit objects:
+
+1. Classification identifies HARD_STOP domain
+2. Look up `activeAuthorizations` for matching domain + valid scope (SESSION or non-expired EXPIRY)
+3. If no authorization: deny (same as pre-Block D behavior)
+4. Look up `activePermits` for matching domain + session
+5. If no permit: deny (same as pre-Block D behavior)
+6. Call `ControlRodMode.evaluateHardStopGate()` with matched authorization + permit
+7. If `mayProceed: true` (GRANTED or CONDITIONAL): allow action, record as `permitted_hard_stop`, write `OPERATOR_ACTION` chain entry
+8. If `mayProceed: false` (DENIED or AUTH_EXPIRED): deny with gate statusCode
+
+### Permit-Authoring Boundary
+
+The hook runtime **consumes** operator-authored permit/authorization state. It does not **create** permits. Permits and authorizations enter session state through operator action (pre-seeded state, direct state authoring, or future operator-facing creation paths). The `/permit` and `/lockout` skills remain read/query/render-only evaluation and validation surfaces.
+
+### Session State Additions
+
+- `activePermits: []` — array of operator-authored permit objects
+- `activeAuthorizations: []` — array of operator-authored LOTO authorization objects
+
+Both survive compaction and are rehydrated on recovery. Missing fields default to `[]`.
+
+### Chain Visibility
+
+Permitted HARD_STOP actions write `OPERATOR_ACTION` chain entries with `action: "permitted"`, the gate statusCode, permitRef, authorizationRef, constrained flag, and conditions.
+
+### Contract Boundaries
+
+Block D does not widen the ControlRodMode contract. The `evaluateHardStopGate` API is unchanged. Block D does not modify `src/ControlRodMode.js`. No new skills or engines are introduced.
+
+## Block A: Instruction-Load Observability v1 (Wave 6B)
+
+Block A extends the hook runtime from 10 handled events to 11 by adding an `InstructionsLoaded` handler that records when instruction files (CLAUDE.md, rules files) are loaded by Claude Code.
+
+### What This Does
+
+Records instruction-load events as observable governance-layer presence signals. Each load event is stored in session state and written to the forensic chain as an `OPERATOR_ACTION` entry.
+
+### What This Does Not Do
+
+- Does not hash or compare file contents — content-level integrity detection is out of scope
+- Does not block instruction loading — the `InstructionsLoaded` event cannot block per Claude Code API
+- Does not prove content-level integrity — it proves load-event presence only
+
+### Event Details
+
+| Field | Source |
+|-------|--------|
+| `file_path` | Absolute path to the instruction file |
+| `memory_type` | Scope: User, Project, Local, or Managed |
+| `load_reason` | Why loaded: session_start, nested_traversal, path_glob_match, include, compact |
+
+### Session State
+
+`loadedInstructions: []` — bounded array of instruction-load records (MAX_LOADED_INSTRUCTIONS = 64). Survives compaction. Missing field defaults to `[]`.
+
+### Fail-Closed Behavior
+
+On internal error, returns advisory context with `FAIL_CLOSED` prefix. Non-blocking (observation-only event).
+
+### Contract Boundaries
+
+Block A does not widen any shared contracts. `InstructionsLoaded` is observation-only. No new skills or engines.
+
+## Block A: Persisted Walk Inputs And Render Cache (Wave 7A)
+
+Block A closes the `/walk` seam by persisting the exact session-level artifacts the existing Walk evaluation requires.
+
+### Persisted Session State Additions
+
+- `persistedBrief` - hook-derived SessionBrief subset with `briefId`, `inScope`, `outOfScope`, `controlRodProfile`, `source`, and `createdAt`
+- `persistedReceipt` - hook-derived SessionReceipt subset with `receiptId`, `completedWork`, `holdsRaised`, `source`, and `createdAt`
+- `lastWalk` - full Walk evaluation cache including `findings`, `findingSummary`, and `asBuilt`
+
+`persistedBrief` initializes at `SessionStart` with empty `inScope` / `outOfScope`, resolved control-rod profile, and `source: "hook_runtime"`. `persistedReceipt` is updated at `Stop` from runtime-observed work only. No conversation reconstruction is used.
+
+### Stop Evaluation Path
+
+At `Stop`, the hook runtime now:
+
+1. ensures `persistedBrief` exists
+2. updates `persistedReceipt.completedWork` from observed matched-tool actions
+3. updates `persistedReceipt.holdsRaised` from blocked attempts
+4. runs `ForemansWalk.evaluate()` against `persistedBrief` + `persistedReceipt`
+5. continues to pass `forensicEntries: []` so hook chain entries do not create false GHOST findings
+6. persists full Walk output, including `asBuilt`, to `lastWalk`
+
+`performedActions` remain derived at `Stop` from observed actions; no separate performed-action substrate is persisted.
+
+### Compaction Survival
+
+`persistedBrief`, `persistedReceipt`, and full `lastWalk` survive `PreCompact` preservation and `SessionStart` rehydration alongside the existing runtime state.
+
+### `/walk` Render Path
+
+`scripts/render-skill.js` now renders `/walk` from persisted runtime state alone by reading `state.lastWalk`. When `lastWalk` is absent, the wrapper returns a truthful HOLD instead of reconstructing Walk input from conversation state.
+
+### Contract Boundaries
+
+Block A does not widen:
+
+- `SessionBrief`
+- `SessionReceipt`
+- `ForemansWalk`
+
+This is a hook-runtime session-state widening only. `MIGRATIONS.md` remains unchanged.
+
+## Block B: Hook-Derived Fire-Break Snapshot (Wave 7A)
+
+Block B closes the `/fire-break` seam by persisting a hook-derived governance-health snapshot that is route-compatible with `FireBreakSkill` but is not the canonical `OpenItemsBoard.projectBoard()` projection.
+
+### Persisted Session State Addition
+
+- `lastFireBreak` - hook-derived governance-health snapshot with fixed `boardLabel`, fixed precedence, fixed group keys, and route-compatible item objects for `/fire-break`
+
+`lastFireBreak` is derived only from governance data the hook runtime honestly has at `Stop`. It is tagged `source: "hook_runtime"` and `projectionType: "hook_runtime_governance_health_snapshot"` to keep the distinction explicit.
+
+### Allowed Sources
+
+The hook-derived snapshot may use only:
+
+- `blockedAttempts`
+- `observedActions`
+- permit-cleared HARD_STOP actions that also have matching completed chain evidence in the current session
+- existing chain references already present in current session state
+
+The hook runtime does not claim or imply input from `omissionFindings`, `continuityEntries`, `standingRiskView`, or canonical `currentSessionResolvedOutcomes`.
+
+### Group Mapping Rules
+
+- `Resolved this session` - permit-cleared HARD_STOP actions completed this session; this is documented as hook-runtime governance passage, not continuity resolution
+- `Aging into risk` - always empty in this hook-derived snapshot
+- `Still unresolved` - always empty in this hook-derived snapshot
+- `Missing now` - unique blocked HARD_STOP actions not later permit-cleared and completed in this session
+
+### Precedence And Dedupe
+
+The persisted snapshot preserves fixed `/fire-break` precedence:
+
+1. `Resolved this session`
+2. `Aging into risk`
+3. `Still unresolved`
+4. `Missing now`
+
+Dedupe is by action fingerprint. If the same action is blocked and later permit-cleared plus completed, it appears only in `Resolved this session`.
+
+### Stop And Render Path
+
+At `Stop`, the hook runtime derives `lastFireBreak` from current session governance state and persists it alongside the existing session record. `PreCompact` preservation and compact `SessionStart` rehydration carry `lastFireBreak` forward unchanged.
+
+`scripts/render-skill.js` now renders `/fire-break` from `state.lastFireBreak` when present. When `lastFireBreak` is absent, the wrapper returns a truthful HOLD instead of reconstructing a board view from conversation state.
+
+### Contract Boundaries
+
+Block B does not widen or modify:
+
+- `OpenItemsBoard`
+- `FireBreakSkill`
+- omission coverage
+- continuity ledger
+- standing-risk engines
+
+This is hook-runtime session-state persistence only. `MIGRATIONS.md` remains unchanged.
+
+## Block C: Operator-Invoked Deny Posture Delivery (Wave 7A)
+
+Block C closes the remaining foreign-repo deny delivery seam with a plugin-owned utility path. This is an operator-invoked delivery mechanism, not live runtime config mutation.
+
+### Delivery Utility
+
+- `scripts/apply-deny-posture.js` reads the canonical `PROJECT_HARD_STOP_DENY_RULES` export from `src/HookRuntime.js`
+- targets a foreign repo's `.claude/settings.json`
+- merges plugin deny rules into `permissions.deny`
+- preserves non-deny settings fields
+- preserves existing non-plugin deny rules
+
+### Modes
+
+- default apply: writes the merged posture and reports added vs already-present rules
+- `--dry-run`: computes the merge and reports what would change without writing
+- `--verify`: checks for the full plugin rule set and exits `1` only when required rules are missing
+
+Exit intent stays fixed:
+
+- `0` = success
+- `1` = verification failure because required rules are missing
+- `2` = hard error
+
+### Truth Boundary
+
+This utility is:
+
+- plugin-owned
+- operator-invoked
+- deterministic
+- idempotent
+- reviewable
+
+This utility is not:
+
+- automatic runtime mutation during a live Claude session
+- hook-time config mutation
+- package, install, setup, or marketplace behavior
+- a universal repo compatibility claim
+
+### Contract Boundaries
+
+Block C does not widen shared runtime contracts and does not modify hook registration or session state. It documents a delivery utility for maintainability only. `MIGRATIONS.md` remains unchanged.
+
+## Phase 1 Structural Lifecycle Expansion
+
+Phase 1 widens handled lifecycle coverage from 11 to 19 without reopening parked scope. This is a structural hook-runtime slice only: no Agent tool classification, no multi-agent control room, no TaskCreated/TaskCompleted/TeammateIdle handling, no WorktreeCreate/WorktreeRemove handling, and no package/install/marketplace claims.
+
+### New Event Handling
+
+| Event | Can block? | Behavior |
+|---|---|---|
+| `UserPromptSubmit` | Yes, narrow only | Blocks only when the submitted prompt contains one of four exact case-insensitive phrases: `disable hooks`, `remove governance`, `bypass safety`, or `turn off enforcement`. No fuzzy or semantic matching. Blocked prompt attempts write additive `OPERATOR_ACTION` chain entries. |
+| `PermissionDenied` | No | Observer-only. Records denied matched-tool events in bounded state and additive chain entries. Does not request retry. |
+| `Notification` | No | Observer-only. Records bounded notification type/title/message state and additive chain entries. No decision control. |
+| `SubagentStart` | No | Observer-only. Records subagent start and maintains bounded active-subagent state. Does not inject governance instructions into the subagent. |
+| `SubagentStop` | Yes, bounded Mini-Walk only | Uses session state only. Does not instantiate `ForemansWalk`, does not read `agent_transcript_path`, and does not build a second findings substrate. May block only when blocking Walk findings are already present in session state, blocked attempts remain permit-uncleared, or bounded active-subagent state is structurally unsafe. |
+| `StopFailure` | No | Observer-only. Records error type/details through additive chain/state paths. Output remains non-governing. |
+| `PostCompact` | No | Verify-only. Compares current post-compact governance state against the preserved pre-compact snapshot, emits advisory context, and writes additive verification trail entries. No gating power is claimed. |
+| `SessionEnd` | No | Observer/finalizer only. Records end reason through additive chain/state paths and clears bounded active-subagent state. |
+
+### ConfigChange Upgrade
+
+`ConfigChange` remains source-governed only:
+
+- `policy_settings` -> observe only
+- `user_settings` -> blockable
+- `project_settings` -> blockable
+- `local_settings` -> blockable
+- `skills` -> blockable
+- unknown or missing source -> observe only
+
+Blockable sources return top-level `decision: "block"` and do not rely on tool/domain classification. `policy_settings` remains advisory only.
+
+### Registration Boundary
+
+Both `.claude/settings.json` and `hooks/hooks.json` register the same handled event set for this phase. `PermissionDenied` remains matcher-scoped to `Bash|Write|Edit`; the new lifecycle observers (`UserPromptSubmit`, `Notification`, `SubagentStart`, `SubagentStop`, `StopFailure`, `PostCompact`, `SessionEnd`) register without matchers.
+
+### Contract Boundaries
+
+Phase 1 does not widen:
+
+- `ForensicChain`
+- `ForemansWalk`
+- `ControlRodMode`
+- `SessionBrief`
+- `SessionReceipt`
+
+All additive chain writes continue to use existing entry types only (`EVIDENCE`, `OPERATOR_ACTION`). `MIGRATIONS.md` remains unchanged.
+
+## Phase 2 MCP Lifecycle Observability Expansion
+
+Phase 2 widens handled lifecycle coverage from 19 to 21 by adding `Elicitation` and `ElicitationResult` as observe-only MCP lifecycle events. Official Claude Code hook docs allow these MCP lifecycle hooks to run as command or HTTP handlers, to match on MCP server name, and to block via exit code `2`; this phase intentionally does not use that control path. The runtime parses, normalizes, routes, and records additive observational evidence only.
+
+### New Event Handling
+
+| Event | Can block? | Behavior |
+|---|---|---|
+| `Elicitation` | No | Observer-only. Records bounded MCP user-input request state and additive chain entries. Preserves `mcp_server_name`, `elicitation_id`, `mode`, a clipped `message` preview, URL origin only when parseable, and requested-schema shape/count summary. Does not dump raw requested schema, raw URL text, or return decision output. |
+| `ElicitationResult` | No | Observer-only. Records bounded MCP user-input result state and additive chain entries. Preserves `mcp_server_name`, `action`, `elicitation_id`, `mode`, and content shape/count summary. Does not dump raw `content`, does not auto-accept/decline/cancel, and does not override the MCP response path. |
+
+### Registration Boundary
+
+Both `.claude/settings.json` and `hooks/hooks.json` register `Elicitation` and `ElicitationResult` without matchers. The official matcher surface is MCP server name, but this phase does not narrow or govern by server name; it only records additive runtime evidence when the events occur.
+
+### Chain Boundary
+
+Phase 2 reuses the existing additive hook-runtime chain envelope and existing entry types only:
+
+- `Elicitation` writes an `OPERATOR_ACTION` chain entry with `eventType: "elicitation"` and observer action `elicitation_observed`.
+- `ElicitationResult` writes an `OPERATOR_ACTION` chain entry with `eventType: "elicitation_result"`, observer action `elicitation_result_observed`, and the MCP result action preserved separately as `resultAction`.
+
+### Contract Boundaries
+
+Phase 2 does not widen:
+
+- `ForensicChain`
+- `ForemansWalk`
+- `ControlRodMode`
+- `SessionBrief`
+- `SessionReceipt`
+
+All additive chain writes continue to use existing entry types only (`EVIDENCE`, `OPERATOR_ACTION`). `MIGRATIONS.md` remains unchanged.
+
+## Phase 3 Remaining Lifecycle Seams (Blocks A/B Shipped, Block C Held)
+
+Phase 3 widens handled lifecycle coverage from 21 to 24 by adding `TaskCreated`, `TaskCompleted`, and `TeammateIdle` in a bounded way while keeping worktree lifecycle seams parked. Task lifecycle state stays session-local and compaction-safe; `TeammateIdle` remains observe-only.
+
+### New Event Handling
+
+| Event | Can block? | Behavior |
+|---|---|---|
+| `TaskCreated` | No in this phase | Tracks a bounded session-local task registry keyed by `task_id`. Normal-path creates do not write chain entries. Re-creating the same `task_id` with changed bounded metadata writes an additive `OPERATOR_ACTION` mismatch entry. No task-stop or continue control is claimed. |
+| `TaskCompleted` | No in this phase | Compares completion input against the session-local task registry. Writes chain entries only for matched completion, completion mismatch, or orphaned completion. Removes the tracked task after comparison so the registry remains bounded. No task-completion gate is claimed. |
+| `TeammateIdle` | No in this phase | Observe-only. Records bounded teammate-idle state and writes additive evidence only when the same teammate or team still has tracked open tasks. Does not continue/stop teammates and does not claim team-governance control. |
+
+### Session State
+
+- `trackedTasks: []` — bounded session-local task registry (MAX_TRACKED_TASKS = 64)
+- `lastTaskLifecycle` — last task create/complete observation outcome
+- `lastTeammateIdle` — last teammate-idle observation with bounded open-task refs
+
+These fields survive `PreCompact` preservation and compact `SessionStart` rehydration. They do not widen shared contracts or public runtime claims.
+
+### Registration Boundary
+
+Both `.claude/settings.json` and `hooks/hooks.json` register `TaskCreated`, `TaskCompleted`, and `TeammateIdle` without matchers.
+
+`WorktreeCreate` and `WorktreeRemove` remain unregistered and therefore fail closed as unknown events in this phase.
+
+### Chain Boundary
+
+Phase 3 reuses the existing additive hook-runtime chain envelope and existing entry types only:
+
+- `TaskCreated` writes no normal-path chain entry.
+- `TaskCreated` writes an `OPERATOR_ACTION` entry only for `task_registry_mismatch` on reused `task_id`.
+- `TaskCompleted` writes `OPERATOR_ACTION` entries with actions `task_completed`, `task_completion_mismatch`, or `task_completion_orphaned`.
+- `TeammateIdle` writes an `OPERATOR_ACTION` entry only for `teammate_idle_with_open_tasks`.
+
+This keeps task lifecycle out of naive birth/death chain spam while still surfacing meaningful completion and anomaly evidence.
+
+### Block C Hold
+
+`WorktreeCreate` remains held because the official contract replaces default git worktree behavior, requires raw absolute-path stdout on success, and would need a sharper wrapper/orchestration contract than this bounded lane claims. `WorktreeRemove` remains parked with it.
+
+### Contract Boundaries
+
+Phase 3 does not widen:
+
+- `ForensicChain`
+- `ForemansWalk`
+- `ControlRodMode`
+- `SessionBrief`
+- `SessionReceipt`
+
+All additive chain writes continue to use existing entry types only (`EVIDENCE`, `OPERATOR_ACTION`). `MIGRATIONS.md` remains unchanged.
+
+## Packet 7A: Advisory Presence Awareness
+
+Packet 7A adds one bounded advisory-presence lane to the existing `PreToolUse` runtime path.
+
+### What Ships
+
+- one pure helper module: `ConfidenceAdvisor`
+- one hook wiring point: `src/HookRuntime.js`
+- one advisory landing path: `PreToolUse` `SUPERVISED` `Write` / `Edit` asks only
+- one human-readable message surface: existing `permissionDecisionReason`
+
+### Advisory Source And Trigger Lock
+
+Advisory source is fixed to:
+
+- one current on-disk file only
+
+Advisory marker family and tiers are fixed to:
+
+- slash-family only
+- `HOLD`
+- `KILL`
+
+The helper reuses the existing Confidence Gradient scan fence only. Missing, unreadable, and out-of-fence files collapse to empty advisory. `WATCH` and `GAP` remain advisory-silent.
+
+### Non-Governing Boundary
+
+Packet 7A does not change:
+
+- exit code
+- permission decision outcome
+- classification
+- domain posture
+- permit logic
+- deny reasoning
+- `PostToolUse`
+- chain writes
+- host-facing response shape
+
+`FULL_AUTO` allow, permitted `HARD_STOP` allow, deny, unclassified allow, and fail-closed paths remain advisory-silent.
+
+### Failure Isolation
+
+Advisory failure is isolated by a local inner try-catch inside `handlePreToolUse`.
+
+If advisory evaluation throws unexpectedly:
+
+- advisory collapses to empty
+- the existing `SUPERVISED` ask result remains unchanged
+- the outer fail-closed governance path is not entered
+
+### Contract Boundaries
+
+Packet 7A does not widen:
+
+- `ControlRodMode`
+- `ForemansWalk`
+- `SessionBrief`
+- `SessionReceipt`
+- `ConstraintsRegistry`
+- `ForensicChain`
+
+`src/HookRuntimeSlice2.js` remains untouched. `MIGRATIONS.md` remains unchanged.

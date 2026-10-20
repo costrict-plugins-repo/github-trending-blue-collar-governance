@@ -1,0 +1,304 @@
+# REPO_INDEX.md
+
+## Purpose
+
+This index is the quick map for the Blue Collar Governance Plugin repository. It describes what is canonical, what is reference-only, and where each kind of change belongs.
+
+## Canonical Root Files
+
+- `README.md` - front-door truth for the repo
+- `CLAUDE.md` - AI operating posture and sync blockers
+- `REPO_INDEX.md` - this repo map
+- `TEAM_CHARTER.md` - governing team doctrine
+- `AI_EXECUTION_DOCTRINE.md` - execution field manual
+- `CONTRIBUTING.md` - contribution rules
+- `MIGRATIONS.md` - shared contract change log
+
+## Canonical Directories
+
+- `.claude-plugin/` - Claude plugin manifest directory
+- `hooks/` - plugin hook registration and plugin-root hook wrapper
+- `.claude/` - standalone compatibility path, project settings, deny rules, and session-local hook runtime state
+- `docs/specs/` - promoted product and runtime specs
+- `docs/indexes/` - maintenance and navigation indexes
+- `skills/` - plugin-discoverable skill artifacts
+- `src/` - runtime implementation area
+- `tests/golden/` - golden test cases
+- `tests/live/` - live or integration verification
+- `scripts/` - utility scripts when needed
+
+## Reference-Only Directories
+
+- `raw/governed-workflow/` - imported governed-workflow materials for reference only
+- `raw/starters/` - starter/template materials used as source inputs only
+
+## Current Primary Sources
+
+- `docs/specs/WAVE1_TRUST_KERNEL.md` - Wave 1 scope, naming freeze, non-goals, build order, and acceptance criteria
+- `docs/specs/HOLD_ENGINE.md` - Hold object contract, lifecycle, and status rules
+- `docs/specs/CONSTRAINTS_REGISTRY.md` - never-do rule contract, enforcement classes, and registry invariants
+- `docs/specs/SAFETY_INTERLOCKS.md` - dangerous-action taxonomy, stop outcomes, and authorization gates
+- `docs/specs/SCOPE_GUARD.md` - asked-vs-done comparison contract and unauthorized-change routing
+- `docs/specs/SESSION_BRIEF.md` - startup session-surface contract for scope, hazards, and constraints
+- `docs/specs/SESSION_RECEIPT.md` - end-of-session as-built contract for planned vs actual work
+- `docs/specs/WAVE2_CONTINUITY_LAYER.md` - Wave 2 continuity-first umbrella baseline for Block A
+- `docs/specs/CONTINUITY_LEDGER.md` - Continuity Ledger v0 contract baseline for qualifying carry-forward persistence
+- `docs/specs/STANDING_RISK_ENGINE.md` - Standing Risk Engine v1 derived escalation contract baseline
+- `docs/specs/OMISSION_COVERAGE_ENGINE.md` - Omission & Coverage Engine v1 bounded omission-evaluation contract baseline
+- `docs/specs/OPEN_ITEMS_BOARD.md` - Open Items Board v1 one-board projection contract baseline
+- `docs/specs/FORENSIC_CHAIN.md` - Forensic Chain v1 append-only evidence-substrate contract baseline
+- `docs/specs/CONTROL_ROD_MODE.md` - Control Rod Mode v2 deterministic HARD_STOP LOTO + Permit contract baseline
+- `docs/specs/FOREMANS_WALK_ENGINE.md` - Foreman's Walk Engine v1 post-session verification contract baseline
+- `docs/specs/HOOK_RUNTIME_ENFORCEMENT_SPINE.md` - Hook runtime enforcement spine contract baseline (Slice 2 + Wave 6A/6B additive sections + Phase 1/2 lifecycle expansion + Phase 3 Blocks A/B + Packet 7A advisory presence lane; 24 lifecycle events with `WorktreeCreate` and `WorktreeRemove` pending)
+- `docs/specs/CHANGE_ORDER_ENGINE.md` - Change Order Engine v1 formal live drift-governance contract baseline
+- `docs/specs/BUDDY_SYSTEM.md` - Buddy System v1 watcher-only live oversight contract baseline
+- `docs/specs/WAVE7_TRUTH_LOCK.md` - Wave 7 umbrella truth lock and final seam-status/front-door sync for C1/C2/C3, the Work Order-only intake/scaffold/posture pilot chain, and parked scope
+- `docs/specs/WORK_ORDER_INTAKE.md` - Work Order intake pilot contract baseline
+- `docs/specs/WORK_ORDER_SCAFFOLD.md` - governed scaffold generation contract baseline for the Work Order intake pilot
+- `docs/specs/WORK_ORDER_POSTURE.md` - visible Work Order posture map contract baseline for the Work Order intake pilot
+- `docs/specs/B_PRIME_RESTORATION_PHASE1_TRUTH_LOCK.md` - B' Phase 1 structural truth lock for restoration scope boundaries and migration guard
+- `docs/specs/RESTORATION_ENGINE.md` - B' Phase 1 RestorationEngine contract baseline (`UNVERIFIED`/`VERIFIED` only)
+- `docs/specs/RESOLVE_SKILL.md` - B' Phase 1 `/resolve` authoring surface contract baseline
+- `docs/specs/RESTORATION_SKILL.md` - B' Phase 1 `/restoration` read/query/render contract baseline
+- `docs/B_PRIME_RESTORATION_PHASE1_CLOSEOUT.md` - durable B' Phase 1 finish-lane closeout evidence map
+- `docs/specs/CONFIDENCE_GRADIENT_ENGINE.md` - Confidence Gradient Phase 1 scanner contract baseline (slash-only markers, deterministic/stateless scan, bounded source fence)
+- `docs/specs/CONFIDENCE_SKILL.md` - Confidence Gradient Phase 1 `/confidence` read/query/render contract baseline
+- `docs/specs/CONFIDENCE_REQUIRED_COVERAGE.md` - Confidence Required Coverage Packet 2 additive contract baseline (explicit opt-in policy, file-first exact-path targeting, separate report family)
+- `docs/specs/CONFIDENCE_MARKER_SNAPSHOT.md` - Confidence Packet 3 snapshot contract baseline (explicit/versioned snapshot capture for file-local marker identity evidence)
+- `docs/specs/MARKER_CONTINUITY_ENGINE.md` - Confidence Packet 3 deterministic file-local marker comparison contract baseline
+- `docs/specs/PACKET3_MARKER_CONTINUITY_TRUTH_LOCK.md` - Confidence Packet 3 architecture lock and no-ship boundary truth
+- `docs/specs/MARKER_TEMPORAL_SIGNALS_ENGINE.md` - Confidence Packet 4 bounded temporal signals contract baseline (explicit dated timeline input, slash-only lineage, deterministic temporal errors)
+- `docs/specs/PACKET4_TEMPORAL_SIGNALS_TRUTH_LOCK.md` - Confidence Packet 4 architecture lock and no-ship boundary truth
+- `docs/specs/PACKET5_WALK_COMPOSITION_TRUTH_LOCK.md` - Packet 5 `/walk` confidence sidecar composition truth lock (Option A only; render-side composition only)
+- `docs/specs/WALK_CONFIDENCE_SIDECAR.md` - Packet 5 additive `/walk` confidence sidecar contract baseline (supported section ids and informational-only boundary)
+- `docs/specs/PACKET6_TRANSITION_EVIDENCE_TRUTH_LOCK.md` - Packet 6 Confidence Transition Evidence truth lock (neutral transition evidence, dedicated `/confidence-transitions`, and no `/confidence` mutation)
+- `docs/specs/CONFIDENCE_TRANSITIONS_SKILL.md` - Packet 6 `/confidence-transitions` authoring surface contract baseline (preview by default, explicit append only through existing ForensicChain API)
+- `docs/specs/PACKET7A_ADVISORY_PRESENCE_TRUTH_LOCK.md` - Packet 7A advisory presence awareness truth lock (presence-only, on-disk-only, SUPERVISED-only message composition)
+- `docs/specs/HOOK_CONFIDENCE_ADVISOR.md` - Packet 7A ConfidenceAdvisor helper contract baseline (file-path-only, on-disk-only, `HOLD` / `KILL` advisory only)
+- `confidence-required-coverage.json` - repo-root explicit opt-in required coverage policy artifact
+- `docs/CONFIDENCE_GRADIENT_PHASE1_CLOSEOUT.md` - durable Confidence Gradient Phase 1 finish-lane closeout evidence map
+- `docs/PACKET3_MARKER_CONTINUITY_CLOSEOUT.md` - durable Confidence Packet 3 marker continuity closeout evidence map
+- `docs/PACKET4_TEMPORAL_SIGNALS_CLOSEOUT.md` - durable Confidence Packet 4 temporal signals closeout evidence map
+- `docs/PACKET5_WALK_COMPOSITION_CLOSEOUT.md` - durable Packet 5 `/walk` confidence sidecar composition closeout evidence map
+- `docs/PACKET6_TRANSITION_EVIDENCE_CLOSEOUT.md` - durable Packet 6 Confidence Transition Evidence closeout evidence map
+- `docs/PACKET7A_ADVISORY_PRESENCE_CLOSEOUT.md` - durable Packet 7A advisory presence awareness closeout evidence map
+- `docs/BLUE_COLLAR_CODING_THESIS.md` - bounded thesis rider for the first Wave 7 front door
+- `docs/OWASP_AGENTIC_MAPPING.md` - public reviewer-facing OWASP agentic security mapping and positioning/proof artifact
+- `docs/WAVE2_CLOSEOUT.md` - durable Wave 2 closeout evidence map
+- `docs/WAVE3_CLOSEOUT.md` - durable Wave 3 closeout evidence map
+- `docs/specs/WAVE4_LIVE_OVERSIGHT.md` - Wave 4 umbrella contract and load-bearing decisions
+- `docs/WAVE4_CLOSEOUT.md` - durable Wave 4 closeout evidence map
+- `docs/specs/WAVE5_OPERATOR_PRODUCT.md` - Wave 5 umbrella truth (one narrative wave executed as 5A / 5B)
+- `docs/specs/SKIN_FRAMEWORK.md` - Wave 5 skins rendering contract baseline
+- `docs/WAVE5_BLOCK0_SUBSTRATE_GATE.md` - Wave 5A Block 0 substrate merit-gate decisions
+- `docs/WAVE5_ONBOARDING_RUNTIME_PROOF.md` - canonical Wave 5 onboarding/runtime-proof truth surface
+- `docs/PLUGIN_CONVERSION_PROOF.md` - canonical plugin conversion proof and smoke runbook
+- `docs/WAVE5_CLOSEOUT.md` - durable Wave 5 closeout evidence map
+- `docs/specs/OPERATOR_TRUST_LEDGER.md` - Wave 5A Block A Operator Trust Ledger v1 contract baseline
+- `docs/specs/JOURNEYMAN_TRUST_ENGINE.md` - Wave 5A Block A Journeyman Trust Engine v1 contract baseline
+- `docs/specs/WARRANTY_MONITOR.md` - Wave 5A Block B Warranty Monitor v1 derived-only contract baseline
+- `docs/specs/HOLD_ENGINE_SCARCITY_SIGNAL.md` - Wave 5A Block C HoldEngine Scarcity Signal v1 derived-only contract baseline
+- `docs/specs/SESSION_LIFECYCLE_SKILLS.md` - Wave 5B Block A Session Lifecycle skill tranche read/query/render-only contract baseline
+- `docs/specs/COMPRESSED_INTELLIGENCE_SKILLS.md` - Wave 5B Block B Compressed Intelligence skill micro-slice read/query/render-only contract baseline
+- `docs/specs/COMPRESSED_HISTORY_TRUST_SKILLS.md` - Wave 5B Block C Compressed History & Trust skill micro-slice read/query/render-only contract baseline
+- `docs/specs/COMPRESSED_SAFETY_POSTURE_SKILLS.md` - Wave 5B Block D Compressed Safety posture skill micro-slice read/query/render-only contract baseline
+- `docs/specs/COMPRESSED_GOVERNANCE_HEALTH_SKILLS.md` - Wave 5B Block E1 Compressed Governance Health skill micro-slice read/query/render-only contract baseline
+- `docs/specs/CONTROL_ROD_POSTURE_SKILL.md` - Wave 5B post-E1 read-only `/control-rods` posture skill slice contract baseline
+- `docs/specs/FIRE_BREAK_SKILL.md` - Wave 5B post-control-rods read-only `/fire-break` audit skill slice contract baseline
+- `docs/specs/CENSUS_SKILL.md` - Wave 5B post-fire-break read-only `/census` repo snapshot skill slice contract baseline
+- `docs/specs/DIAGNOSE_SKILL.md` - Wave 5B post-census read-only `/diagnose` evidence-view skill slice contract baseline
+- `docs/specs/KEYSTONE_SKILL.md` - Wave 5B post-diagnose read-only `/keystone` decision-support skill slice contract baseline
+- `docs/specs/ELIMINATE_SKILL.md` - Wave 5B post-keystone read-only `/eliminate` hold-options skill slice contract baseline
+- `docs/specs/BUDDY_STATUS_SKILL.md` - Wave 5B post-eliminate read-only `/buddy-status` watcher-state skill slice contract baseline
+- `docs/specs/CHANGE_ORDER_SKILL.md` - Wave 5B post-buddy-status read-only `/change-order` status skill slice contract baseline
+- `docs/specs/CALLOUT_SKILL.md` - Wave 5B post-change-order read-only `/callout` callout-detail skill slice contract baseline
+- `docs/specs/RED_TAG_SKILL.md` - Wave 5B post-callout `/red-tag` interlock decision surface contract baseline
+- `docs/specs/PERMIT_SKILL.md` - Wave 5B post-red-tag `/permit` gate decision surface contract baseline
+- `docs/specs/LOCKOUT_SKILL.md` - Wave 5B post-permit `/lockout` LOTO validation surface contract baseline
+- `skills/toolbox-talk/SKILL.md` - Wave 5B Block A `/toolbox-talk` skill artifact
+- `skills/receipt/SKILL.md` - Wave 5B Block A `/receipt` skill artifact
+- `skills/as-built/SKILL.md` - Wave 5B Block A `/as-built` skill artifact
+- `skills/walk/SKILL.md` - Wave 5B Block A `/walk` skill artifact
+- `skills/phantoms/SKILL.md` - Wave 5B Block B `/phantoms` skill artifact
+- `skills/ufo/SKILL.md` - Wave 5B Block B `/ufo` skill artifact
+- `skills/gaps/SKILL.md` - Wave 5B Block B `/gaps` skill artifact
+- `skills/chain/SKILL.md` - Wave 5B Block C `/chain` skill artifact
+- `skills/warranty/SKILL.md` - Wave 5B Block C `/warranty` skill artifact
+- `skills/journeyman/SKILL.md` - Wave 5B Block C `/journeyman` skill artifact
+- `skills/constraints/SKILL.md` - Wave 5B Block D `/constraints` skill artifact
+- `skills/silence-map/SKILL.md` - Wave 5B Block D `/silence-map` skill artifact
+- `skills/prevention-record/SKILL.md` - Wave 5B Block E1 `/prevention-record` skill artifact
+- `skills/rights/SKILL.md` - Wave 5B Block E1 `/rights` skill artifact
+- `skills/control-rods/SKILL.md` - Wave 5B read-only `/control-rods` posture skill artifact
+- `skills/fire-break/SKILL.md` - Wave 5B read-only `/fire-break` audit skill artifact
+- `skills/census/SKILL.md` - Wave 5B read-only `/census` repo snapshot skill artifact
+- `skills/diagnose/SKILL.md` - Wave 5B read-only `/diagnose` evidence-view skill artifact
+- `skills/keystone/SKILL.md` - Wave 5B read-only `/keystone` decision-support skill artifact
+- `skills/eliminate/SKILL.md` - Wave 5B read-only `/eliminate` hold-options skill artifact
+- `skills/buddy-status/SKILL.md` - Wave 5B read-only `/buddy-status` watcher-state skill artifact
+- `skills/change-order/SKILL.md` - Wave 5B read-only `/change-order` status skill artifact
+- `skills/callout/SKILL.md` - Wave 5B read-only `/callout` callout-detail skill artifact
+- `skills/red-tag/SKILL.md` - Wave 5B `/red-tag` interlock decision surface skill artifact
+- `skills/permit/SKILL.md` - Wave 5B `/permit` gate decision surface skill artifact
+- `skills/lockout/SKILL.md` - Wave 5B `/lockout` LOTO validation surface skill artifact
+- `docs/specs/LOTO_CLEARANCE_SKILL.md` - Wave 6B Block B `/loto-clearance` LOTO clearance authoring surface contract baseline
+- `docs/specs/PERMIT_ISSUANCE_SKILL.md` - Wave 6B Block B `/issue-permit` permit issuance authoring surface contract baseline
+- `skills/loto-clearance/SKILL.md` - Wave 6B `/loto-clearance` operator-facing LOTO clearance authoring skill artifact
+- `skills/issue-permit/SKILL.md` - Wave 6B `/issue-permit` operator-facing permit issuance skill artifact
+- `skills/work-order-intake/SKILL.md` - Wave 7B `/work-order-intake` operator-facing intake pilot skill artifact
+- `skills/work-order-scaffold/SKILL.md` - Wave 7B `/work-order-scaffold` operator-facing scaffold pilot skill artifact
+- `skills/work-order-posture/SKILL.md` - Wave 7B `/work-order-posture` operator-facing posture pilot skill artifact
+- `skills/confidence/SKILL.md` - Confidence Gradient Phase 1 `/confidence` operator-facing read/query/render skill artifact
+- `skills/confidence-transitions/SKILL.md` - Packet 6 `/confidence-transitions` operator-facing preview/explicit-append skill artifact
+- `docs/WAVE6A_CLOSEOUT.md` - durable Wave 6A closeout evidence map
+- `docs/WAVE6B_CLOSEOUT.md` - durable Wave 6B closeout evidence map
+- `docs/WAVE6_CLOSEOUT.md` - durable Wave 6 full closeout evidence map
+- `docs/WAVE6_PROOF_PACK.md` - Wave 6 evaluator-facing proof pack
+- `docs/WAVE7_CLOSEOUT.md` - durable Wave 7 closeout evidence map
+- `docs/PHASE3_LIFECYCLE_EXPANSION_CLOSEOUT.md` - durable Phase 3 lifecycle expansion closeout evidence map
+- `docs/PHASE3_REMAINING_LIFECYCLE_SEAMS_CLOSEOUT.md` - durable Phase 3 structural lane closeout evidence map
+- `docs/PHASE2_LIFECYCLE_EXPANSION_CLOSEOUT.md` - durable Phase 2 lifecycle expansion closeout evidence map
+- `docs/PHASE1_LIFECYCLE_EXPANSION_CLOSEOUT.md` - durable Phase 1 lifecycle expansion closeout evidence map
+- `scripts/render-skill.js` - CC-native render wrapper for proof surface dispatch
+- `CLAUDE.md` - current session posture and closeout expectations
+- `README.md` - repo identity and current implementation truth
+
+## Current State
+
+- The repo is on `main` with `origin` configured and current shipped truth running through Wave 5 (`/lockout` surface chain plus tranche 4 skins rendering), Wave 6A (fail-closed hook hardening, live chain population, permit/lockout runtime closure), Wave 6B (InstructionsLoaded observability, `/loto-clearance` and `/issue-permit` authoring surfaces), and Phase 3 lifecycle expansion (24-event enforcement matrix with `WorktreeCreate` and `WorktreeRemove` pending; `Setup` unclaimed).
+- Phase 3 lifecycle expansion closeout is captured at `docs/PHASE3_LIFECYCLE_EXPANSION_CLOSEOUT.md`, including current 24-event truth, historical continuity notes, and front-door sync status.
+- Structural lane detail for the shipped Phase 3 A/B seam work is preserved at `docs/PHASE3_REMAINING_LIFECYCLE_SEAMS_CLOSEOUT.md`.
+- Phase 2 lifecycle expansion closeout remains the historical 21-event waypoint at `docs/PHASE2_LIFECYCLE_EXPANSION_CLOSEOUT.md`.
+- Phase 1 lifecycle expansion closeout remains the historical 19-event waypoint at `docs/PHASE1_LIFECYCLE_EXPANSION_CLOSEOUT.md`.
+- B' Phase 1 restoration lane is shipped on `main`: `RestorationEngine`, `RestorationProjectionAdapter`, `/resolve`, and `/restoration` are implemented and bounded.
+- Verification states for restoration are exactly `UNVERIFIED` and `VERIFIED`; `PARTIAL` remains deferred.
+- Board projection remains continuity-linked and verified-only; manual-only and walk-only restored items stay visible on `/restoration` and do not enter Board projection unless continuity-linked and verified.
+- B' Phase 1 closeout is captured at `docs/B_PRIME_RESTORATION_PHASE1_CLOSEOUT.md`; no shared contract widening shipped and `MIGRATIONS.md` remains unchanged.
+- Confidence Gradient Phase 1 is shipped on `main`: `ConfidenceGradientEngine` and `/confidence` are implemented with slash-only markers (`///`, `////`, `/////`, `//////`), deterministic/stateless explicit-snapshot scan behavior, line-leading parser rules, and a scan fence locked to `src/`, `hooks/`, `scripts/`, `.claude/`, and `*.js`.
+- Confidence Phase 1 remains bounded: semicolon-family is reserved and not executable, `/confidence` is read/query/render-only, and no shared-contract widening shipped.
+- Confidence Packet 3 marker continuity is shipped additively on `main`: explicit snapshot capture via `ConfidenceGradientEngine.buildSnapshot(files)`, deterministic file-local comparison via `MarkerContinuityEngine.compare(previousSnapshot, currentSnapshot)`, optional `/confidence` composition through `markerContinuityView`, and explicit ambiguity handling via `AMBIGUOUS`.
+- Confidence Packet 3 remains bounded: no rename-aware or cross-file continuity, no widening of `ContinuityLedger`/`ForensicChain`/`ForemansWalk`/hook-lifecycle behavior, and no dependency on Packet 2 required-coverage policy.
+- Confidence Packet 4 temporal signals are shipped additively on `main`: explicit dated timeline evaluation via `MarkerTemporalSignalsEngine.evaluateTimeline(timelineEntries, options)`, optional `/confidence` composition through `markerTemporalSignalsView`, and bounded findings `STALE_HOLD` and `UNRESOLVED_KILL`.
+- Confidence Packet 4 remains bounded: temporal interpretation depends on explicit dated timeline input only (no git/filesystem/session/branch/closeout inferred time), ambiguity is preserved (`TEMPORAL_LINEAGE_AMBIGUOUS`), no Packet 2 required-coverage aging is introduced, and no resolution/standing-risk/score/priority/health semantics are introduced.
+- Confidence Packet 4 introduces no semicolon-family runtime support and no rename-aware or cross-file temporal continuity claims.
+- Confidence Required Coverage (Packet 2) is shipped as explicit opt-in with repo-root `confidence-required-coverage.json`, file-first exact-path targeting, and additive required coverage composition that remains separate from observed marker truth.
+- Confidence Required Coverage remains bounded: no hook/lifecycle/omission/temporal integration, no reviewed-clean semantics, and no package/install/marketplace claim widening.
+- Current repo scan posture for Confidence Phase 1 is empty: zero line-leading slash markers are present in the bounded scan fence, so the real repo scan returns an empty report.
+- Confidence Packet 3 closeout is implemented at `docs/PACKET3_MARKER_CONTINUITY_CLOSEOUT.md`.
+- Confidence Packet 4 closeout is implemented at `docs/PACKET4_TEMPORAL_SIGNALS_CLOSEOUT.md`.
+- Confidence Packet 5 `/walk` confidence sidecar composition is shipped additively on `main`: `SessionLifecycleSkills.renderWalk(walkEvaluation, { confidenceSidecarView })` may compose optional precomputed sidecar input as a separate informational `confidence` block.
+- Packet 5 sidecar v1 supports only `observedMarkers`, `requiredCoverage`, and `markerContinuity`; temporal sidecar sections are excluded in Packet 5.
+- Packet 5 sidecar composition does not change walk findings, severity, blocking posture, clean-closeout posture, `sessionOfRecordRef`, or `asBuiltStatusCounts`.
+- Packet 5 keeps Foreman's Walk and persistence/hook-runtime shapes unchanged; no Pass 6, no persistence widening, no hook-runtime/chain/board/standing-risk widening, and no skin translation wave are shipped.
+- Packet 5 wrapper/runtime posture remains persisted-walk-only: `scripts/render-skill.js walk` does not auto-supply or compute confidence sidecar input.
+- Packet 5 closeout is implemented at `docs/PACKET5_WALK_COMPOSITION_CLOSEOUT.md`.
+- Confidence Packet 6 transition evidence is shipped additively in current repo truth: `ConfidenceTransitionGenerator.generateConfidenceTransitionEntries(input)` maps explicit Packet 3 compare output into append-ready neutral `FINDING` entries, and `ConfidenceTransitionsSkill.renderConfidenceTransitions(input)` provides dedicated `/confidence-transitions` preview or explicit append through existing `ForensicChain.appendEntry(...)`.
+- Confidence Packet 6 remains bounded: transition classes are limited to `NEWLY_OBSERVED`, `NO_LONGER_OBSERVED`, and `RETIERED`; `/confidence` remains read/query/render-only; no resolution/restoration semantics, no new `ForensicChain` entry types, no linked history traversal, and no shared-contract widening ship.
+- Confidence Packet 6 closeout is implemented at `docs/PACKET6_TRANSITION_EVIDENCE_CLOSEOUT.md`.
+- Confidence Packet 7A advisory presence awareness is shipped additively in current repo truth: `ConfidenceAdvisor.buildConfidenceAdvisory(filePath)` reads one existing on-disk file, and `src/HookRuntime.js` may append advisory text only on `PreToolUse` SUPERVISED `Write` / `Edit` asks through the existing `permissionDecisionReason` string.
+- Confidence Packet 7A remains bounded: only slash-family `HOLD` / `KILL` markers trigger advisory; missing/unreadable/out-of-fence files and `WATCH` / `GAP` remain silent; deny / `FULL_AUTO` / permitted `HARD_STOP` / unclassified paths remain silent; advisory failure is locally swallowed; and no shared-contract widening ships.
+- Confidence Packet 7A closeout is implemented at `docs/PACKET7A_ADVISORY_PRESENCE_CLOSEOUT.md`.
+- Git is initialized on `main`.
+- All six Wave 1 systems have promoted contract specs.
+- Runtime systems are implemented for all six Wave 1 systems: `HoldEngine`, `ConstraintsRegistry`, `SafetyInterlocks`, `ScopeGuard`, `SessionBrief`, and `SessionReceipt`.
+- Wave 2 Block A runtime baseline is implemented for `ContinuityLedger` at `src/ContinuityLedger.js` with golden proof at `tests/golden/ContinuityLedger.golden.test.js`.
+- Wave 2 Block B1 derived standing-risk baseline is implemented for `StandingRiskEngine` at `src/StandingRiskEngine.js` with golden proof at `tests/golden/StandingRiskEngine.golden.test.js`.
+- Standing Risk remains derived from continuity with explicit `continuationSignals`; no second standing-risk persistence layer is implemented.
+- Wave 2 Block C1 bounded omission baseline is implemented for `OmissionCoverageEngine` at `src/OmissionCoverageEngine.js` with golden proof at `tests/golden/OmissionCoverageEngine.golden.test.js`.
+- Block C1 requires explicit `profilePack` selection, is bounded to exactly three first-proof packs (`pricing_quote_change`, `form_customer_data_flow`, `protected_destructive_operation`), and emits deterministic findings with fixed `missingItemCode` vocabulary.
+- Block C1 remains evaluation-scoped only, with no omission-finding persistence/write behavior and no continuity-promotion workflow runtime yet.
+- Wave 2 Block D1 open-items-board baseline is implemented for `OpenItemsBoard` at `src/OpenItemsBoard.js` with golden proof at `tests/golden/OpenItemsBoard.golden.test.js`.
+- Block D1 is one board only with exactly four fixed groups (`Missing now`, `Still unresolved`, `Aging into risk`, `Resolved this session`).
+- Block D1 is projection-only over existing A/B/C truth, uses explicit current-session resolved-outcomes input, and enforces precedence+dedupe.
+- Block D1 has no persisted board store and no continuity-promotion runtime behavior.
+- No score/confidence/rank/priority/anomaly/prediction logic is implemented in Block D1.
+- Wave 2 closeout evidence map exists at `docs/WAVE2_CLOSEOUT.md`; Architect signed off 2026-04-03.
+- Wave 3 Block A1 Forensic Chain baseline is implemented at `src/ForensicChain.js` with golden proof at `tests/golden/ForensicChain.golden.test.js` and canon spec at `docs/specs/FORENSIC_CHAIN.md`.
+- Forensic Chain is evidence-substrate only and does not create a second continuity or standing-risk operational substrate.
+- Wave 4 Block A1 Control Rod Mode baseline is implemented at `src/ControlRodMode.js` with golden proof at `tests/golden/ControlRodMode.golden.test.js` and canon spec at `docs/specs/CONTROL_ROD_MODE.md`.
+- Block B1 starter profiles are `conservative`, `balanced`, and `velocity`; SessionBrief stores `controlRodProfile` as a normalized snapshot object with no second authorization field.
+- Control Rod Mode v2 preserves the same three autonomy levels (`FULL_AUTO`, `SUPERVISED`, `HARD_STOP`) and upgrades HARD_STOP behavior with deterministic LOTO + Permit semantics.
+- Permit gating applies only to HARD_STOP domains.
+- No adaptive learning and no rod suggestions are implemented.
+- Wave 4 Block B1 Change Order Engine baseline is implemented at `src/ChangeOrderEngine.js` with golden proof at `tests/golden/ChangeOrderEngine.golden.test.js` and canon spec at `docs/specs/CHANGE_ORDER_ENGINE.md`.
+- Change Orders support deterministic `APPROVED`, `REJECTED`, and `DEFERRED` outcomes with deferred promotion through existing continuity paths.
+- Wave 4 Block C1 Buddy System baseline is implemented at `src/BuddySystem.js` with golden proof at `tests/golden/BuddySystem.golden.test.js` and canon spec at `docs/specs/BUDDY_SYSTEM.md`.
+- Buddy is watcher-only live oversight, writes callouts to existing Forensic Chain, and does not build/fix/revert.
+- SessionBrief supports one optional `toolboxTalk` enrichment object for startup summaries; no duplicated full payload fields are introduced.
+- Wave 3 Block C1 Foreman's Walk baseline is implemented at `src/ForemansWalk.js` with golden proof at `tests/golden/ForemansWalk.golden.test.js` and canon spec at `docs/specs/FOREMANS_WALK_ENGINE.md`.
+- Foreman's Walk is post-session verification only; it emits deterministic findings plus As-Built accountability delta while SessionReceipt remains session-of-record.
+- Foreman's Walk does not implement live intervention, watcher/buddy behavior, or adaptive intelligence.
+- Wave 3 Block D1 live integration proof is implemented at `tests/live/wave3.active-governance.live.test.js`.
+- Wave 3 Block D2 closeout and front-door/index truth sync are implemented at `docs/WAVE3_CLOSEOUT.md`.
+- Wave 3 is shipped.
+- Wave 4 is shipped: Blocks A1 + B1 + C1 + D1 + D2 are complete.
+- Wave 4 Block D1 live integration proof is implemented at `tests/live/wave4.live-oversight.live.test.js`.
+- Wave 4 Block D2 closeout and front-door/index truth sync are implemented at `docs/WAVE4_CLOSEOUT.md`.
+- Wave 5 is one narrative wave executed as 5A / 5B.
+- Wave 5A Block 0 docs-only truth-sync/substrate-gate/naming-scrub is implemented at `docs/specs/WAVE5_OPERATOR_PRODUCT.md` and `docs/WAVE5_BLOCK0_SUBSTRATE_GATE.md`.
+- Wave 5A Block A baselines are implemented at `docs/specs/OPERATOR_TRUST_LEDGER.md`, `docs/specs/JOURNEYMAN_TRUST_ENGINE.md`, `src/OperatorTrustLedger.js`, `src/JourneymanTrustEngine.js`, `tests/golden/OperatorTrustLedger.golden.test.js`, and `tests/golden/JourneymanTrustEngine.golden.test.js`.
+- Operator Trust Ledger is approved on engineering merit and implemented as the Wave 5A Block A substrate baseline.
+- Wave 5A Block B baseline is implemented at `docs/specs/WARRANTY_MONITOR.md`, `src/WarrantyMonitor.js`, and `tests/golden/WarrantyMonitor.golden.test.js`.
+- Warranty remains derived-first in Wave 5 and is implemented as derived-only monitoring in Block B.
+- Wave 5A Block C baseline is implemented at `docs/specs/HOLD_ENGINE_SCARCITY_SIGNAL.md`, `src/HoldEngineScarcitySignal.js`, and `tests/golden/HoldEngineScarcitySignal.golden.test.js`.
+- HoldEngine Scarcity Signal remains additive direction and is implemented as derived-only enrichment in Block C.
+- Wave 5B Block A baseline is implemented at `docs/specs/SESSION_LIFECYCLE_SKILLS.md`, `skills/toolbox-talk/SKILL.md`, `skills/receipt/SKILL.md`, `skills/as-built/SKILL.md`, `skills/walk/SKILL.md`, `src/SessionLifecycleSkills.js`, and `tests/golden/SessionLifecycleSkills.golden.test.js`.
+- Wave 5B Block B baseline is implemented at `docs/specs/COMPRESSED_INTELLIGENCE_SKILLS.md`, `skills/phantoms/SKILL.md`, `skills/ufo/SKILL.md`, `skills/gaps/SKILL.md`, `src/CompressedIntelligenceSkills.js`, and `tests/golden/CompressedIntelligenceSkills.golden.test.js`.
+- Wave 5B Block C baseline is implemented at `docs/specs/COMPRESSED_HISTORY_TRUST_SKILLS.md`, `skills/chain/SKILL.md`, `skills/warranty/SKILL.md`, `skills/journeyman/SKILL.md`, `src/CompressedHistoryTrustSkills.js`, and `tests/golden/CompressedHistoryTrustSkills.golden.test.js`.
+- Wave 5B Block D baseline is implemented at `docs/specs/COMPRESSED_SAFETY_POSTURE_SKILLS.md`, `skills/constraints/SKILL.md`, `skills/silence-map/SKILL.md`, `src/CompressedSafetyPostureSkills.js`, and `tests/golden/CompressedSafetyPostureSkills.golden.test.js`.
+- Compressed Safety posture skills are read/query/render-only surfaces over existing ConstraintsRegistry truth, SafetyInterlocks truth, and ControlRodMode posture/status views; no standalone `/control-rods` skill is shipped in Block D.
+- Wave 5B Block E1 baseline is implemented at `docs/specs/COMPRESSED_GOVERNANCE_HEALTH_SKILLS.md`, `skills/prevention-record/SKILL.md`, `skills/rights/SKILL.md`, `src/CompressedGovernanceHealthSkills.js`, and `tests/golden/CompressedGovernanceHealthSkills.golden.test.js`.
+- A Wave 5B read-only `/control-rods` posture slice is implemented at `docs/specs/CONTROL_ROD_POSTURE_SKILL.md`, `skills/control-rods/SKILL.md`, `src/ControlRodPostureSkill.js`, and `tests/golden/ControlRodPostureSkill.golden.test.js`.
+- A Wave 5B read-only `/fire-break` audit slice is implemented at `docs/specs/FIRE_BREAK_SKILL.md`, `skills/fire-break/SKILL.md`, `src/FireBreakSkill.js`, and `tests/golden/FireBreakSkill.golden.test.js`.
+- A Wave 5B read-only `/census` repo snapshot slice is implemented at `docs/specs/CENSUS_SKILL.md`, `skills/census/SKILL.md`, `src/CensusSkill.js`, and `tests/golden/CensusSkill.golden.test.js`.
+- A Wave 5B read-only `/diagnose` evidence-view slice is implemented at `docs/specs/DIAGNOSE_SKILL.md`, `skills/diagnose/SKILL.md`, `src/DiagnoseSkill.js`, and `tests/golden/DiagnoseSkill.golden.test.js`.
+- A Wave 5B read-only `/keystone` decision-support slice is implemented at `docs/specs/KEYSTONE_SKILL.md`, `skills/keystone/SKILL.md`, `src/KeystoneSkill.js`, and `tests/golden/KeystoneSkill.golden.test.js`.
+- A Wave 5B read-only `/eliminate` hold-options slice is implemented at `docs/specs/ELIMINATE_SKILL.md`, `skills/eliminate/SKILL.md`, `src/EliminateSkill.js`, and `tests/golden/EliminateSkill.golden.test.js`.
+- A Wave 5B read-only `/buddy-status` watcher-state slice is implemented at `docs/specs/BUDDY_STATUS_SKILL.md`, `skills/buddy-status/SKILL.md`, `src/BuddyStatusSkill.js`, and `tests/golden/BuddyStatusSkill.golden.test.js`.
+- A Wave 5B read-only `/change-order` status slice is implemented at `docs/specs/CHANGE_ORDER_SKILL.md`, `skills/change-order/SKILL.md`, `src/ChangeOrderSkill.js`, and `tests/golden/ChangeOrderSkill.golden.test.js`.
+- A Wave 5B read-only `/callout` callout-detail slice is implemented at `docs/specs/CALLOUT_SKILL.md`, `skills/callout/SKILL.md`, `src/CalloutSkill.js`, and `tests/golden/CalloutSkill.golden.test.js`.
+- A Wave 5B `/red-tag` interlock decision surface is implemented at `docs/specs/RED_TAG_SKILL.md`, `skills/red-tag/SKILL.md`, `src/RedTagSkill.js`, and `tests/golden/RedTagSkill.golden.test.js`.
+- A Wave 5B `/permit` gate decision surface is implemented at `docs/specs/PERMIT_SKILL.md`, `skills/permit/SKILL.md`, `src/PermitSkill.js`, and `tests/golden/PermitSkill.golden.test.js`.
+- A Wave 5B `/lockout` LOTO validation surface is implemented at `docs/specs/LOCKOUT_SKILL.md`, `skills/lockout/SKILL.md`, `src/LockoutSkill.js`, and `tests/golden/LockoutSkill.golden.test.js`.
+- Wave 5 skins tranche 4 is implemented at `docs/specs/SKIN_FRAMEWORK.md`, `src/SkinFramework.js`, and `tests/golden/SkinFramework.golden.test.js`.
+- Wave 5 hook/runtime Slice 2 enforcement spine is implemented at `.claude/settings.json`, `.claude/hooks/run-governance-hook.js`, `src/HookRuntime.js`, `src/HookRuntimeSlice2.js`, `docs/specs/HOOK_RUNTIME_ENFORCEMENT_SPINE.md`, `tests/golden/HookRuntime.golden.test.js`, and `tests/live/wave5.hook-runtime.live.test.js`.
+- Additive plugin conversion structure is implemented at `.claude-plugin/plugin.json`, `hooks/hooks.json`, `hooks/run-governance-hook.js`, and plugin-discoverable `skills/<name>/SKILL.md`.
+- Project `.claude/settings.json` remains the deny-layer and standalone compatibility surface; standalone and plugin hook loading should be treated as alternate modes until simultaneous loading is explicitly proven.
+- Slice 2 keeps fail-closed command hooks over `Bash`, `Write`, and `Edit`, and adds bounded `SessionStart` re-injection plus `PreCompact` preservation for compaction survival while retaining the session-local `Stop`/`ForemansWalk` gate.
+- Wave 5 onboarding/runtime-proof artifact is implemented at `docs/WAVE5_ONBOARDING_RUNTIME_PROOF.md`.
+- Plugin conversion proof artifact is implemented at `docs/PLUGIN_CONVERSION_PROOF.md`.
+- Wave 5 closeout evidence map is implemented at `docs/WAVE5_CLOSEOUT.md`.
+- Compressed Governance Health skills are read/query/render-only surfaces where `/prevention-record` renders explicit captured governance signals and `/rights` renders a static manual declaration.
+- Session Lifecycle skills are read/query/render-only surfaces over existing SessionBrief, SessionReceipt, and Foreman's Walk outputs.
+- Compressed Intelligence skills are read/query/render-only surfaces over existing Foreman's Walk truthfulness findings, Standing Risk unresolved/aging views, and Omission expected-signal-missing findings.
+- Compressed History & Trust skills are read/query/render-only surfaces over existing Forensic Chain history views, Warranty Monitor derived posture views, and persisted trust posture read paths.
+- Wave 5 skill topology shipped 26 skills. Wave 6B added `/loto-clearance` and `/issue-permit`, Wave 7B Blocks D/E/F added `/work-order-intake`, `/work-order-scaffold`, and `/work-order-posture`, B' Phase 1 added `/resolve` and `/restoration`, Confidence Gradient Phase 1 added `/confidence`, and Packet 6 added `/confidence-transitions`, bringing the total to 35 skills.
+- SessionBrief no-widening remains hard-locked for Wave 5; `journeymanLevel` is not introduced.
+- Shipped now: the current Wave 5 operator/action surface chain runs through `/lockout`, and shipped skill tranches remain deterministic route adapters over existing engine truth.
+- Tranche 4 skin support is locked to Whiteboard and Punch List for `/toolbox-talk`, `/receipt`, `/as-built`, and `/walk`; Inspection Report for `/receipt`, `/as-built`, and `/walk`; Work Order for `/toolbox-talk`, `/receipt`, and `/as-built`; Dispatch Board for `/walk`, `/phantoms`, `/change-order`, and `/control-rods`; Ticket System for `/receipt`, `/walk`, `/phantoms`, and `/change-order`; Daily Log for `/toolbox-talk`, `/receipt`, `/as-built`, and `/walk`; Repair Order for `/receipt` and `/as-built`; Kitchen Ticket for `/walk`, `/phantoms`, and `/change-order`; Farm Ledger for `/toolbox-talk`, `/receipt`, `/as-built`, `/walk`, and `/change-order`; Safety / LOTO Log for `/permit` and `/lockout`; unsupported combinations fail closed to raw canonical render.
+- Block F shipped deny-pattern refinement (narrowed `*auth*` glob to 10 targeted patterns) and CC-native render wrapper (`scripts/render-skill.js` with golden proof).
+- Block G shipped governed-workflow portability proof (plugin governs foreign repo, non-empty chain and prevention-record from governed-workflow session).
+- Block H shipped FieldPoint external enforcement proof v2 (HARD_STOP + SUPERVISED + non-empty chain, stronger than the first AAR).
+- Wave 6 proof pack: `docs/WAVE6_PROOF_PACK.md`. Wave 6 closeout: `docs/WAVE6_CLOSEOUT.md`.
+- Later / not yet shipped: additional Wave 5 work outside the current shipped set, including later skins beyond tranche 4, remains pending. Hook/runtime slices through Wave 6A/6B and Blocks F/G/H are now shipped.
+- Wave 7 umbrella truth is implemented at `docs/specs/WAVE7_TRUTH_LOCK.md`.
+- C1 `/walk` persistence seam is closed through persisted hook-runtime inputs and render cache. C2 `/fire-break` persistence seam is closed through persisted `lastFireBreak`, a hook-derived governance-health snapshot that is route-compatible for `/fire-break`; canonical Open Items Board engine inputs remain outside current hook-runtime scope. C3 plugin-native foreign-repo deny delivery is closed: foreign repos can now receive plugin-governed deny posture through a plugin-owned, operator-invoked apply path that is deterministic and reviewable, not runtime auto-injection, and not a universal compatibility claim. Work Order is the only intake pilot for Wave 7.
+- Current shipped truth: the existing Work Order skin/render surface still exists unchanged, the Work Order intake pilot surface is shipped at `docs/specs/WORK_ORDER_INTAKE.md`, `src/WorkOrderIntakeEngine.js`, `skills/work-order-intake/SKILL.md`, and `tests/golden/WorkOrderIntakeEngine.golden.test.js`, the Work Order scaffold generation surface is shipped at `docs/specs/WORK_ORDER_SCAFFOLD.md`, `src/WorkOrderScaffoldEngine.js`, `skills/work-order-scaffold/SKILL.md`, and `tests/golden/WorkOrderScaffoldEngine.golden.test.js`, and the Work Order posture surface is shipped at `docs/specs/WORK_ORDER_POSTURE.md`, `src/WorkOrderPostureEngine.js`, `skills/work-order-posture/SKILL.md`, and `tests/golden/WorkOrderPostureEngine.golden.test.js`.
+- Blocks D, E, F, and G are shipped. The chain stops at reviewed artifacts only: intake object, scaffold object, and posture map. No protection-default bridge, SessionBrief bridge, hook-runtime integration, or execution path from intake/scaffold/posture is shipped.
+- Parked/out of scope in Wave 7: package/install, marketplace, Agent governance, multi-agent governance, trust-transfer/certificate work, second intake skin, and future-gated Anthropic work.
+- Wave 7 closeout evidence map is implemented at `docs/WAVE7_CLOSEOUT.md`, and the bounded thesis rider is implemented at `docs/BLUE_COLLAR_CODING_THESIS.md`.
+- Boundary hold: Block C closes foreign-repo deny delivery through operator-invoked apply; runtime auto-injection and universal compatibility remain out of scope.
+- Not claimed / not verified: `package.json` is absent; local plugin artifact structure is shipped, but marketplace installation, compatibility-layer claims, and end-to-end runtime setup claims remain unverified.
+- No multi-agent control room behavior is implemented.
+- `origin` remote is configured.
+- The repo remains governed/spec-led; live integration proof exists at `tests/live/wave1.operator-flow.live.test.js`, and final Wave 1 evidence is captured in `docs/WAVE1_CLOSEOUT.md`.
+
+
+
+## Plugin Conversion Surfaces
+
+- `.claude-plugin/plugin.json` - plugin manifest for local Claude Code loading
+- `hooks/hooks.json` - plugin hook registration surface
+- `hooks/run-governance-hook.js` - plugin-root hook wrapper over the shipped runtime
+- `docs/PLUGIN_CONVERSION_PROOF.md` - plugin conversion proof and smoke runbook
+- Project `.claude/settings.json` remains the standalone compatibility path and current deny-layer surface.
